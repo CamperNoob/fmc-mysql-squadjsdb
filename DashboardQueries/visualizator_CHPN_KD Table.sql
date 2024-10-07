@@ -1,1 +1,1 @@
-call grafana_dashboardkd($Last,'$LastType','${Layer:json}','${Nickname:json}','${Server:json}')
+call grafana_dashboardkd($Last,'$LastType','${Layer:json}','${Nickname:json}','${Server:json}','${Match:json}')
