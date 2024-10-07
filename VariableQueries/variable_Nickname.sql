@@ -1,0 +1,1 @@
+select lastName from dblog_players where lastName not like 'unknown player' and id not in (select playerid from lookup_excludeplayers)
