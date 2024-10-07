@@ -1,0 +1,1 @@
+select mapName as Layer from lookup_listofmaps where isActive = 1

@@ -1,0 +1,1 @@
+select number from lookup_numbers where number <= case when '$LastType' = 'hours' then 24 when '$LastType' = 'days' then 31 when '$LastType' = 'months' then 12 else 3 end

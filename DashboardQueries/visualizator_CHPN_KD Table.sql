@@ -1,0 +1,1 @@
+call grafana_dashboardkd($Last,'$LastType','${Layer:json}','${Nickname:json}','${Server:json}')

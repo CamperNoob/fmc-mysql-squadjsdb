@@ -1,0 +1,1 @@
+select name from dblog_servers where id != 3
