@@ -21,7 +21,7 @@ begin
 	insert into getstatsbytime (steamID, kills, serverID, matchID)
 	select attacker as steamID, count(victim) as kills, server as serverID, `match` as matchID
 	from dblog_deaths
-	where teamkill = 0 and attacker != "00000000000000000" and attacker != victim
+	where teamkill = 0 and attacker != "00000000000000000" and attacker != victim and attacker not in (select a.steamId from dblog_players as a cross join lookup_excludeplayers as b on a.id = b.playerid)
 		and `server` is not null and `match` is not null and attacker is not null
 		and time between startDate and endDate
 	group by server, `match`, attacker;
@@ -29,7 +29,7 @@ begin
 	insert into getstatsbytime (steamID, deaths, serverID, matchID)
 	select victim as steamID, count(attacker) as deaths, server as serverID, `match` as matchID
 	from dblog_deaths
-	where victim != "00000000000000000" and `server` is not null and `match` is not null and victim is not null
+	where victim != "00000000000000000" and `server` is not null and `match` is not null and victim is not null and victim not in (select a.steamId from dblog_players as a cross join lookup_excludeplayers as b on a.id = b.playerid)
 		and time between startDate and endDate
 	group by server, `match`, victim
 	on duplicate key update deaths = values(deaths);
@@ -39,7 +39,7 @@ begin
 	select attacker as steamID, count(victim) as wounds, server as serverID, `match` as matchID
 	from dblog_wounds
 	where teamkill = 0 and attacker != "00000000000000000" and attacker != victim
-		and `server` is not null and `match` is not null and attacker is not null
+		and `server` is not null and `match` is not null and attacker is not null and attacker not in (select a.steamId from dblog_players as a cross join lookup_excludeplayers as b on a.id = b.playerid)
 		and time between startDate and endDate
 	group by server, `match`, attacker
 	on duplicate key update wounds = values(wounds);
@@ -47,7 +47,7 @@ begin
 	insert into getstatsbytime (steamID, revives, serverID, matchID)
 	select reviver as steamID, count(victim) as revives, server as serverID, `match` as matchID
 	from dblog_revives
-	where reviver != "00000000000000000"  and reviver != victim
+	where reviver != "00000000000000000"  and reviver != victim and reviver not in (select a.steamId from dblog_players as a cross join lookup_excludeplayers as b on a.id = b.playerid)
 		and `server` is not null and `match` is not null and reviver is not null
 		and time between startDate and endDate
 	group by server, `match`, reviver
