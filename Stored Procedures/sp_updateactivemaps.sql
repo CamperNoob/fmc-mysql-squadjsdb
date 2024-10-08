@@ -6,7 +6,7 @@ begin
 
 	insert into `listofactivemaps` (id)
 	select distinct a.id from `squadjs`.`lookup_listofmaps` as a
-	inner join `squadjs`.`dblog_matches` as b on b.layerClassName like concat('%', a.mapName, '%');
+	inner join `squadjs`.`dblog_matches` as b on b.layerClassName like concat('%', a.mapName, '%') and b.layerClassName not like '%_Seed%';
 
 	update `squadjs`.`lookup_listofmaps`
 	set isActive = 0;
