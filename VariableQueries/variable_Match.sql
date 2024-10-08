@@ -9,4 +9,4 @@ where starttime between `fn_getdatetimefromrange`($Last, '$LastType', NOW()) and
             or
             exists (select 1 from dblog_revives as a where a.match = `dblog_matches`.id)
         )
-    and winner is not null and map is not null
+    and winner is not null and `ignore` = 0

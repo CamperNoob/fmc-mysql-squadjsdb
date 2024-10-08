@@ -13,6 +13,7 @@ begin
 	insert into getmatchidsbytimestamps (matchID)
 	select distinct a.id
 	from dblog_matches as a
-	right join getmatchidsbytimestamps_timestampList as b on a.startTime between date_add(date_add(b.searchTime, interval -3 hour), interval -1 minute) and date_add(date_add(b.searchTime, interval -3 hour), interval 1 minute);
+	right join getmatchidsbytimestamps_timestampList as b on a.startTime between date_add(date_add(b.searchTime, interval -3 hour), interval -1 minute) and date_add(date_add(b.searchTime, interval -3 hour), interval 1 minute) 
+		and a.ignore = 0;
 	drop temporary table if exists `getmatchidsbytimestamps_timestampList`;
 end

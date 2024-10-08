@@ -16,6 +16,6 @@ begin
 	insert into getmatchidsbymap (matchID)
 	select distinct a.id
 	from dblog_matches as a
-	right join getmatchidsbymap_maplist as b on a.layerClassname like b.searchName;
+	right join getmatchidsbymap_maplist as b on a.layerClassname like b.searchName and a.ignore = 0;
 	drop temporary table if exists `getmatchidsbymap_maplist`;
 end
