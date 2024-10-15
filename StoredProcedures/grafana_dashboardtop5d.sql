@@ -11,7 +11,7 @@ begin
 		and matchId in (select matchId from getmatchidsbymap) 
 		and matchId in (select matchId from getmatchidsbytimestamps)
 	group by playerName, steamId
-	order by sum(Deaths) desc
+	order by sum(Deaths) desc, sum(Kills) asc, sum(Wounds) asc, sum(Revives) asc, playerName asc
 	limit 5;
 	drop temporary table if exists getstatsbytime;
 	drop temporary table if exists getmatchidsbymap;
