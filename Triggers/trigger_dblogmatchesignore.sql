@@ -3,5 +3,7 @@ create trigger `squadjs`.`trigger_dblogmatchesignore`
 before insert on `dblog_matches`
 for each ROW
 BEGIN
-	SET NEW.ignore = 1;
+	IF (NEW.endTime is null)
+		THEN SET NEW.ignore = 1;
+	END IF;
 END
