@@ -1,7 +1,9 @@
 drop procedure if exists `grafana_dashboardtop5rd`;
-create procedure `grafana_dashboardtop5rd`(lastVar int, lastTypeVar varchar(255), layerVar TEXT, serverVar TEXT, matchTimestamps TEXT)
+--create procedure `grafana_dashboardtop5rd`(lastVar int, lastTypeVar varchar(255), layerVar TEXT, serverVar TEXT, matchTimestamps TEXT)
+create procedure `grafana_dashboardtop5rd`(fromVar varchar(255), toVar varchar(255), layerVar TEXT, serverVar TEXT, matchTimestamps TEXT)
 begin 
-	call sp_getstatsbytime(fn_getdatetimefromrange(lastVar,lastTypeVar,now()),now());
+--	call sp_getstatsbytime(fn_getdatetimefromrange(lastVar,lastTypeVar,now()),now());
+	call sp_getstatsbytime(str_to_date(left(fromVar, 19),'%Y-%m-%dT%H:%i:%s'),str_to_date(left(toVar, 19),'%Y-%m-%dT%H:%i:%s'));
 	call sp_getmatchidsbymap(layerVar);
 	call sp_serveridsfromnamesjson(serverVar);
 	call sp_getmatchidsbytimestamps(matchTimestamps);

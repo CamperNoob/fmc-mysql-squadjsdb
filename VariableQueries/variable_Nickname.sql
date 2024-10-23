@@ -1,1 +1,1 @@
-select lastName from dblog_players where lastName not like 'unknown player' and id not in (select playerid from lookup_excludeplayers)
+call sp_variable_Nickname('${__from:date:iso}','${__to:date:iso}')

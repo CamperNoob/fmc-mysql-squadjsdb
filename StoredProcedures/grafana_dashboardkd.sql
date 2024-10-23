@@ -1,7 +1,9 @@
 drop procedure if exists `grafana_dashboardkd`;
-create procedure `grafana_dashboardkd`(lastVar int, lastTypeVar varchar(255), layerVar TEXT, nicknameVar TEXT, serverVar TEXT, matchTimestamps TEXT)
+--create procedure `grafana_dashboardkd`(lastVar int, lastTypeVar varchar(255), layerVar TEXT, nicknameVar TEXT, serverVar TEXT, matchTimestamps TEXT)
+create procedure `grafana_dashboardkd`(fromVar varchar(255), toVar varchar(255), layerVar TEXT, nicknameVar TEXT, serverVar TEXT, matchTimestamps TEXT)
 begin 
-	call sp_getstatsbytime(fn_getdatetimefromrange(lastVar,lastTypeVar,now()),now());
+--	call sp_getstatsbytime(fn_getdatetimefromrange(lastVar,lastTypeVar,now()),now());
+	call sp_getstatsbytime(str_to_date(left(fromVar, 19),'%Y-%m-%dT%H:%i:%s'),str_to_date(left(toVar, 19),'%Y-%m-%dT%H:%i:%s'));
 	call sp_getmatchidsbymap(layerVar);
 	call sp_steamidlistfromnamesjson(nicknameVar);
 	call sp_serveridsfromnamesjson(serverVar);

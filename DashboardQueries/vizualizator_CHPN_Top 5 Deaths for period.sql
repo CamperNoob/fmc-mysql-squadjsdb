@@ -1,1 +1,1 @@
-call grafana_dashboardtop5d($Last,'$LastType','${Layer:json}','${Server:json}','${Match:json}')
+call grafana_dashboardtop5d('${__from:date:iso}','${__to:date:iso}','${Layer:json}','${Server:json}','${Match:json}')

@@ -1,1 +1,1 @@
-select mapName as Layer from lookup_listofmaps where isActive = 1
+call sp_variable_Layer('${__from:date:iso}','${__to:date:iso}','${Server:json}','${Nickname:json}')

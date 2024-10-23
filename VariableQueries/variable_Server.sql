@@ -1,1 +1,1 @@
-select name from dblog_servers where id != 3
+call sp_variable_Server('${__from:date:iso}','${__to:date:iso}','${Nickname:json}')
