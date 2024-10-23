@@ -6,10 +6,10 @@ begin
 
 	IF kills = 0 THEN
 		SET result = 0;
-    ELSEIF deaths = 0 THEN
-		SET result = 99;
-    ELSE
-        SET result = kills/deaths;
-    END IF;
+  ELSEIF deaths = 0 THEN
+		SET result = kills;
+  ELSE
+      SET result = kills/deaths;
+  END IF;
 	return result;
 end
