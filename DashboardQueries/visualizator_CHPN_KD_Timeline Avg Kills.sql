@@ -1,0 +1,1 @@
+call grafana_dashboardkavg('${__from:date:iso}','${__to:date:iso}','${Nickname:text}')
