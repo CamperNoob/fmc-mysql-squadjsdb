@@ -86,4 +86,7 @@ begin
 
 	delete from getstatsbytime
 	where matchTime not between startDate and endDate;
+
+	delete from getstatsbytime
+	where `matchId` in (select distinct `id` from dblog_matches where `ignore` = 1);
 end
