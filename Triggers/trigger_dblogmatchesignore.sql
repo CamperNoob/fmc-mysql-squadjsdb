@@ -6,4 +6,7 @@ BEGIN
 	IF (NEW.endTime is null)
 		THEN SET NEW.ignore = 1;
 	END IF;
+	IF (NEW.displayName is null)
+		THEN SET NEW.displayName = DATE_FORMAT(date_add(NEW.StartTime, interval 3 hour), '%Y-%m-%d %H:%i');
+	END IF;
 END

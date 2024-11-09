@@ -9,7 +9,7 @@ BEGIN
     call sp_getmatchidsbymap(layerVar);
     call sp_serveridsfromnamesjson(serverVar);
     call sp_steamidlistfromnamesjson(nicknameVar);
-	select DATE_FORMAT(date_add(matches.StartTime, interval 3 hour), '%Y-%m-%d %H:%i') as `Match`
+	select `displayName` as `Match`
     from `dblog_matches` as matches
     where matches.starttime between str_to_date(left(fromVar, 19),'%Y-%m-%dT%H:%i:%s') and str_to_date(left(toVar, 19),'%Y-%m-%dT%H:%i:%s')
         and matches.server != 3
@@ -23,8 +23,8 @@ BEGIN
         and matches.ignore = 0
         and matches.id in (select matchID from getmatchidsbymap)
         and matches.server in (select serverID from serveridsfromnamesjson)
-    order by matches.StartTime asc;
+    order by matches.StartTime desc;
     drop temporary table if exists `getmatchidsbymap`;
     drop temporary table if exists `serveridsfromnamesjson`;
     drop temporary table if exists `steamidlistfromnamesjson`;
-END
+END 
