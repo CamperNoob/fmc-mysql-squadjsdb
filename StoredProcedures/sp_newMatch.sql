@@ -7,5 +7,5 @@ CREATE PROCEDURE `sp_newMatch`(
 BEGIN
 	select @newMatch := max(id) + 1 from dblog_matches;
     INSERT INTO dblog_matches (id, dlc, mapClassname, layerClassname, map, layer, startTime, endTime, winner, `server`, `ignore`, `displayName`)
-	values (@newMatch, "Game", mapName, mapName, mapName, mapName, date_add(startTimeNew, interval -3 hour), date_add(startTimeNew, interval -1 hour), winnerVar, 10, 0, matchName);
+	values (@newMatch, "Game", mapName, mapName, mapName, mapName, date_add(startTimeNew, interval -3 hour), date_add(startTimeNew, interval -1 hour), winnerVar, 10, 0, displayName);
 END
