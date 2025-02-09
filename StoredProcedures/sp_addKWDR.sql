@@ -1,14 +1,16 @@
 DROP PROCEDURE IF EXISTS `sp_addKDWR`;
-CREATE PROCEDURE `sp_addKDWR` (matchID int, steamIDnew char(255), revivesNew int, woundsNew int, killsNew int, deathsNew int)
+CREATE PROCEDURE `sp_addKDWR` (matchID int, steamIDnew char(255), revivesNew int, woundsNew int, killsNew int, deathsNew int, vehiclesNew int)
 BEGIN
 	DECLARE maxIdRevives INT DEFAULT 0;
     DECLARE maxIdDeaths INT DEFAULT 0;
     DECLARE maxIdWounds INT DEFAULT 0;
+	DECLARE maxIdVehicles INT DEFAULT 0;
     DECLARE matchTimestamp DATETIME;
 
 	SELECT MAX(id) INTO maxIdRevives FROM dblog_revives;
     SELECT MAX(id) INTO maxIdDeaths FROM dblog_deaths;
     SELECT MAX(id) INTO maxIdWounds FROM dblog_wounds;
+	SELECT MAX(id) INTO maxIdVehicles FROM dblog_vehicledestroys;
     SELECT startTime INTO matchTimestamp FROM dblog_matches WHERE id = matchID;
 	
 	-- DEATHS AND KILLS
@@ -93,5 +95,26 @@ BEGIN
 	window w as (order by victimName);
 
 	drop temporary table if exists reviveRows;
+
+	-- VEHICLE DESTROYS
+	drop temporary table if exists vehicleRows;
+	create temporary table vehicleRows (`time` datetime, `server` int, `match` int, damageTime datetime, attacker varchar(255), attackerName varchar(255), attackerTeams int, teamkill int, vehicleName varchar(255), vehicleTeams varchar(255));
+
+	if vehiclesNew > 0 then
+		insert into vehicleRows (`time`, `server`, `match`, damageTime, attacker, attackerName, attackerTeams, teamkill, vehicleName, vehicleTeams)
+		--(`time`, woundTime, victimName, victimTeamID, victimSquadID, attackerName, attackerTeamID, attackerSquadID, damage, weapon, teamkill, reviverName, reviverTeamID, reviverSquadID, `server`, attacker, victim, reviver, `match`)
+			select matchTimestamp as `time`, 10 as `server`, matchID as `match`, null as damageTime
+			, steamIDnew as attacker, fn_getnamefromsteamid(steamIDnew) as attackerName, null as attackerTeams
+			,0 as teamkill, null as vehicleName, null as vehicleTeams
+		from lookup_numbers
+		where number between 1 and vehiclesNew;
+	end if;
+
+	insert into dblog_vehicledestroys (id, `time`, `server`, `match`, damageTime, attacker, attackerName, attackerTeams, teamkill, vehicleName, vehicleTeams)
+	select maxIdVehicles + row_number() over w as id, `time`, `server`, `match`, damageTime, attacker, attackerName, attackerTeams, teamkill, vehicleName, vehicleTeams
+	from vehicleRows
+	window w as (order by attackerName);
+
+	drop temporary table if exists vehicleRows;
 
 END;

@@ -8,7 +8,7 @@ begin
 	call sp_steamidlistfromnamesjson(nicknameVar);
 	call sp_serveridsfromnamesjson(serverVar);
 	call sp_getmatchidsbytimestamps(matchTimestamps);
-	select playerName as Nickname, steamId as SteamID, sum(revives) as Revives, sum(wounds) as Wounds, sum(kills) as Kills, sum(deaths) as Deaths, fn_calculateKD(sum(kills), sum(deaths)) as `Kill\Deaths`, fn_calculateKD(sum(revives), sum(deaths)) as `Revive\Deaths`
+	select playerName as Nickname, steamId as SteamID, sum(revives) as Revives, sum(wounds) as Wounds, sum(kills) as Kills, sum(deaths) as Deaths, sum(vehicles) as `Destroyed Vehicles`, fn_calculateKD(sum(kills), sum(deaths)) as `Kill\Deaths`, fn_calculateKD(sum(revives), sum(deaths)) as `Revive\Deaths`
 	from getstatsbytime 
 	where serverID in (select serverID from serveridsfromnamesjson) 
 		and matchId in (select matchId from getmatchidsbymap) 

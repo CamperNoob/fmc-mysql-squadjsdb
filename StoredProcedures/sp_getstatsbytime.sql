@@ -10,6 +10,7 @@ begin
 		deaths int,
 		wounds int,
 		revives int,
+		vehicles int,
 		serverId int,
 		matchId int,
 		serverName varchar(255),
@@ -53,6 +54,15 @@ begin
 	group by server, `match`, reviver
 	on duplicate key update revives = values(revives);
 
+	insert into getstatsbytime (steamID, vehicles, serverID, matchID)
+	select attacker as steamID, count(attackerName) as vehicles, server as serverID, `match` as matchID
+	from dblog_vehicledestroys
+	where teamkill = 0 and attacker != "00000000000000000"
+		and `server` is not null and `match` is not null and attacker is not null and attacker not in (select a.steamId from dblog_players as a where a.ignore = 1)
+		and time between startDate and endDate
+	group by server, `match`, attacker
+	on duplicate key update vehicles = values(vehicles);
+
 	update getstatsbytime
 	set playerName = fn_getnamefromsteamid(steamID);
 
@@ -83,6 +93,10 @@ begin
 	update getstatsbytime
 	set revives = 0
 	where revives is null;
+
+	update getstatsbytime
+	set vehicles = 0
+	where vehicles is null;
 
 	delete from getstatsbytime
 	where matchTime not between startDate and endDate;
