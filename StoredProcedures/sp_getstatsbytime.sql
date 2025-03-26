@@ -57,7 +57,7 @@ begin
 	insert into getstatsbytime (steamID, vehicles, serverID, matchID)
 	select attacker as steamID, count(attackerName) as vehicles, server as serverID, `match` as matchID
 	from dblog_vehicledestroys
-	where teamkill = 0 and attacker != "00000000000000000"
+	where (teamkill = 0 or teamkill is null) and attacker != "00000000000000000"
 		and `server` is not null and `match` is not null and attacker is not null and attacker not in (select a.steamId from dblog_players as a where a.ignore = 1)
 		and time between startDate and endDate
 	group by server, `match`, attacker
