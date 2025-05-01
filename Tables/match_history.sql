@@ -10,9 +10,10 @@ CREATE TABLE match_history (
     ticket_op_r2 INT,
     ticket_diff_r2 INT,
     layer VARCHAR(255),
-    vods VARCHAR(255),
+    vods varchar(255),
     match_status VARCHAR(255),
-    tactics VARCHAR(255),
+    tactics varchar(255),
     event_url VARCHAR(255),
-    `ignore` int
+    `ignore` int,
+    event_name varchar(255)
 );
