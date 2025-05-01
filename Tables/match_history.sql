@@ -15,5 +15,5 @@ CREATE TABLE match_history (
     tactics varchar(255),
     event_url VARCHAR(255),
     `ignore` int,
-    event_name varchar(255)
+    event_name varchar(255) UNIQUE
 );
