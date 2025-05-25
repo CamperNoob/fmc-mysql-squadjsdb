@@ -14,7 +14,8 @@ begin
 		and matchId in (select matchId from getmatchidsbymap) 
 		and steamId in (select steamID from steamidlistfromnamesjson)
 		and matchId in (select matchId from getmatchidsbytimestamps)
-	group by playerName, steamId;
+	group by playerName, steamId
+	order by (sum(vehicles)*5) + sum(revives) + sum(kills) + (sum(wounds) - sum(kills)) - sum(deaths) desc;
 	drop temporary table if exists getstatsbytime;
 	drop temporary table if exists getmatchidsbymap;
 	drop temporary table if exists steamidlistfromnamesjson;
