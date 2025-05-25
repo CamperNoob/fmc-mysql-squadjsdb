@@ -1,0 +1,1 @@
+call grafana_dashboardkillfeed('${Match:json}','${Nickname:json}')
