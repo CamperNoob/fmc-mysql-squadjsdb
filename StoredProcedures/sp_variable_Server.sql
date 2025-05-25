@@ -25,7 +25,8 @@ BEGIN
 --                    or exists (
 --                        select 1 from steamidlist_copy3 as stjs3
 --                        join dblog_wounds as c on c.match = matches.id and c.teamkill != 1 and c.attacker = stjs3.steamID))
-            and matches.server = servers.id);
+            and matches.server = servers.id
+            and matches.startTime between str_to_date(left(fromVar, 19),'%Y-%m-%dT%H:%i:%s') and str_to_date(left(toVar, 19),'%Y-%m-%dT%H:%i:%s'));
 --    drop temporary table if exists `steamidlistfromnamesjson`;
 --    drop temporary table if exists `steamidlist_copy1`;
 --    drop temporary table if exists `steamidlist_copy2`;

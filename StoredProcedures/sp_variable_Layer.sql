@@ -10,9 +10,11 @@ BEGIN
 --    call sp_steamidlistfromnamesjson(nicknameVar);
 --    call sp_getmatchidsbytimestamps(matchVar);
     select maps.mapName as Layer from lookup_listofmaps as maps 
-    where maps.isActive = 1 --and exists (
---        select 1 from dblog_matches as matches
---        where 
+    where maps.isActive = 1 and exists (
+        select 1 from dblog_matches as matches
+        where matches.ignore = 0
+        and matches.layerClassname like concat('%',maps.mapName,'%')
+        and matches.startTime between str_to_date(left(fromVar, 19),'%Y-%m-%dT%H:%i:%s') and str_to_date(left(toVar, 19),'%Y-%m-%dT%H:%i:%s'));
 --            matches.id in (select matchId from getmatchidsbytimestamps) and
 --            matches.server in (select serverID from serveridsfromnamesjson)
 --            and matches.ignore = 0
@@ -23,9 +25,7 @@ BEGIN
 --                left join dblog_wounds as c on c.match = matches.id and c.teamkill != 1 and c.attacker = stjs.steamID
 --                left join dblog_revives as d on d.match = matches.id and d.reviver = stjs.steamID
 --                where a.match is not null or b.match is not null or c.match is not null or d.match is not null)
---            and matches.layerClassname like concat('%',maps.mapName,'%'));
 --    drop temporary table if exists `serveridsfromnamesjson`;
 --    drop temporary table if exists `steamidlistfromnamesjson`;
---    drop temporary table if exists `getmatchidsbytimestamps`
-;
+--    drop temporary table if exists `getmatchidsbytimestamps`;
 END
