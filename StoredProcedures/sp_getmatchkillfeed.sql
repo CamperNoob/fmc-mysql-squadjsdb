@@ -141,18 +141,18 @@ begin
 	set time_from = concat('[',TIME_FORMAT(TIMEDIFF(`time`, match_start_time), '%H:%i:%s'),'] ');
 
 	update getmatchkillfeed
-	set html = concat(time_from, attackerColor, attacker, ' </font> ', weapon);
+	set html = concat(time_from, coalesce(attackerColor, '<font color="#ffffff">'), coalesce(attacker, '?'), ' </font> ', coalesce(weapon, '[?]'));
 
 	update getmatchkillfeed
 	set html = concat(html, ' ')
 	where weaponType is null;
 
 	update getmatchkillfeed
-	set html = concat(html, ' <img src="public/img/squad_killfeed/', weaponType, '.png" height="45"> ')
+	set html = concat(html, ' <img src="public/img/squad_killfeed/', coalesce(weaponType, 'other'), '.png" height="45"> ')
 	where weaponType is not null;
 
 	update getmatchkillfeed
-	set html = concat(html, victimColor, victim, ' </font>');
+	set html = concat(html, coalesce(victimColor, '<font color="#ffffff">'), coalesce(victim, '?'), ' </font>');
 
 	update getmatchkillfeed
 	set html = concat(html, ' <img src="public/img/squad_killfeed/vehicle.png" height="45">')
