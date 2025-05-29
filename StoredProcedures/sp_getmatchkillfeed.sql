@@ -126,16 +126,16 @@ begin
 	where `type` = 1;
 
 	update getmatchkillfeed
+	set weaponType = fn_getweapontype(`weapon`) 
+	where `type` <> 1;
+
+	update getmatchkillfeed
 	set weapon = concat("[", replace(replace(`weapon`, 'BP_', ''), '_', ' '), "]")
 	where `type` <> 1;
 
 	update getmatchkillfeed
 	set weaponType = 'revive'
 	where `type` = 1;
-
-	update getmatchkillfeed
-	set weaponType = fn_getweapontype(`weapon`) 
-	where `type` <> 1;
 
 	update getmatchkillfeed
 	set time_from = concat('[',TIME_FORMAT(TIMEDIFF(`time`, match_start_time), '%H:%i:%s'),'] ');

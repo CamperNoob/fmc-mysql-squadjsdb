@@ -58,7 +58,7 @@ begin
 	)
 	,mine as (
 		select weapon from a
-		where a.weapon like '%Deployable' and a.weapon like '%mine%'
+		where a.weapon like '%Deployable%' and a.weapon like '%mine%'
 	)
 	,total_defined as (
 		select weapon, 'frag' as `type` from frag
