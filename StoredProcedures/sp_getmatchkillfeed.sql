@@ -1,5 +1,5 @@
 drop procedure if exists `sp_getmatchkillfeed`;
-create procedure `sp_getmatchkillfeed` (matchDisplayName TEXT)
+create procedure `sp_getmatchkillfeed` (matchDisplayName TEXT, debug BOOLEAN)
 begin
 
 	declare matchid int;
@@ -38,7 +38,7 @@ begin
 	where `match` = matchid;
 
 	insert into getmatchkillfeed_pre (id, `time`, `type`, attacker, attackerTeamID, victim, victimTeamID, weapon, teamkill)
-	select id, `time`, 1, reviver, reviverTeamID, victim, victimTeamID, weapon, 0
+	select id, `time`, 1, reviver, reviverTeamID, victim, victimTeamID, 'Revive', 0
 	from dblog_revives
 	where `match` = matchid;
 
@@ -75,7 +75,7 @@ begin
 		primary key (`id`, `type`)
 	);
 
-	insert into getmatchkillfeed (`id`, `time`, `type`, `attacker`, `attackerSteamID`, `attackerTeamID`, `victimSteamID`, `victimTeamID`, `weapon`)
+	insert into getmatchkillfeed (`id`, `time`, `type`, `attacker`, `attackerSteamID`, `attackerTeamID`, `victimSteamID`, `victimTeamID`, `weapon`, `weaponType`)
 	select 
 		`id`, 
 		`time`, 
@@ -85,7 +85,8 @@ begin
 		`attackerTeamID` as `attackerTeamID`, 
 		`victim` as `victimSteamID`, 
 		`victimTeamID` as `victimTeamID`,
-		`weapon`
+		`weapon`,
+		coalesce(fn_getweapontype(`weapon`), 'unknown') as `weaponType`
 	from `getmatchkillfeed_pre`;
 
 	update getmatchkillfeed
@@ -106,7 +107,7 @@ begin
 	where `type` = 2;
 
 	update getmatchkillfeed
-	set victimSteamID = null
+	set `victimSteamID` = fn_getvehicletype(`victimSteamID`)
 	where `type` = 2;
 
 	update getmatchkillfeed
@@ -122,40 +123,42 @@ begin
 	where victimTeamID not in (1,2);
 
 	update getmatchkillfeed
-	set weapon = '[Revive]'
-	where `type` = 1;
-
-	update getmatchkillfeed
-	set weaponType = fn_getweapontype(`weapon`) 
-	where `type` <> 1;
-
-	update getmatchkillfeed
-	set weapon = concat("[", replace(replace(`weapon`, 'BP_', ''), '_', ' '), "]")
-	where `type` <> 1;
-
-	update getmatchkillfeed
-	set weaponType = 'revive'
+	set weaponType = 'fielddressing'
 	where `type` = 1;
 
 	update getmatchkillfeed
 	set time_from = concat('[',TIME_FORMAT(TIMEDIFF(`time`, match_start_time), '%H:%i:%s'),'] ');
 
 	update getmatchkillfeed
-	set html = concat(time_from, coalesce(attackerColor, '<font color="#ffffff">'), coalesce(attacker, '?'), ' </font> ', coalesce(weapon, '[?]'));
+	set html = concat(time_from, coalesce(attackerColor, '<font color="#ffffff">'), coalesce(attacker, '?'), ' </font> ');
 
 	update getmatchkillfeed
-	set html = concat(html, ' ')
+	set html = concat(html, ' <img src="public/img/squad_killfeed/weapons/unknown.png" height="45"> ')
 	where weaponType is null;
 
+	if debug then
+		update getmatchkillfeed
+		set html = concat(html, ' [', weapon, '] ');
+	end if;
+
 	update getmatchkillfeed
-	set html = concat(html, ' <img src="public/img/squad_killfeed/', coalesce(weaponType, 'other'), '.png" height="45"> ')
+	set html = concat(html, ' <img src="public/img/squad_killfeed/weapons/', weaponType, '.png" height="45"> ')
 	where weaponType is not null;
 
 	update getmatchkillfeed
-	set html = concat(html, coalesce(victimColor, '<font color="#ffffff">'), coalesce(victim, '?'), ' </font>');
+	set html = concat(html, coalesce(victimColor, '<font color="#ffffff">'), coalesce(victim, '?'), ' </font>')
+	where `type` <> 2;
 
 	update getmatchkillfeed
-	set html = concat(html, ' <img src="public/img/squad_killfeed/vehicle.png" height="45">')
+	set html = concat(html, ' <img src="public/img/squad_killfeed/mapicons/', victimSteamID,'.png" height="45">')
+	where `type` = 2 and victimSteamID is not null;
+
+	update getmatchkillfeed
+	set html = concat(html, ' <img src="public/img/squad_killfeed/mapicons/map_jeep_transport.png" height="45">')
+	where `type` = 2 and victimSteamID is null;
+
+	update getmatchkillfeed
+	set html = concat(html, coalesce(victimColor, '<font color="#ffffff">'), '[', coalesce(victim, '?'), '] </font>')
 	where `type` = 2;
 	
 	drop temporary table if exists getmatchkillfeed_pre;
